@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 
 const App = () => {
   const [streamedText, setStreamedText] = useState("");
+  const [stopStreaming, setStopStreaming] = useState(false);
 
   useEffect(() => {
     const eventSource = new EventSource("http://localhost:3005/stream-file");
 
     eventSource.onmessage = (event) => {
-      console.log(event.data);
-      setStreamedText((prevText) => prevText + event.data);
+      setStreamedText((prev) => prev + event.data);
     };
 
     eventSource.onerror = (error) => {
@@ -21,10 +21,17 @@ const App = () => {
     };
   }, []);
 
+  const handleStopStreaming = () => {
+    setStopStreaming(true);
+  };
   return (
-    <div>
-      <h1>Streaming File Content</h1>
-      <div>{streamedText}</div>
+    <div style={{ width: "90vw" }}>
+      <h1 style={{ whiteSpace: "pre-line" }}>Streaming File Content</h1>
+      <div>
+        <p>{streamedText}</p>
+        <hr />
+      </div>
+      <button onClick={handleStopStreaming}>Stop</button>
     </div>
   );
 };
